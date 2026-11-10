@@ -2,18 +2,14 @@
 
 Use your Claude Max (or Pro) subscription with Pi.
 
-pi-cc-bridge is an unofficial Pi package that routes Anthropic OAuth requests through your existing Claude subscription usage by applying Claude Code 2.1.319 request conventions. The existing source patch and standalone-binary build system remain available as a fallback.
+pi-cc-bridge is an unofficial Pi package that routes Anthropic OAuth requests through your existing Claude subscription usage by applying Claude Code 2.1.319 request conventions.
 
 ## Install
 
-pi-cc-bridge has independently versioned compatibility surfaces:
-
 | Component | Compatible version |
 | --- | --- |
-| Pi package | Pi 0.84.1 or newer |
-| Standalone `pi-cc-bridge` binary | Based on Pi 0.84.1 |
-| Claude Code protocol (Pi package) | 2.1.319 |
-| Claude Code protocol (standalone binary) | 2.1.280 |
+| Pi | 0.84.1 or newer |
+| Claude Code protocol | 2.1.319 |
 
 The Pi package requires Pi 0.84.1 or newer, with no upper version limit. Future Pi releases are trusted until an incompatibility is identified; the package peer dependencies are `"*"` because Pi supplies its core packages at runtime.
 
@@ -30,7 +26,7 @@ pi update --extensions
 For a reproducible install, pin a release tag:
 
 ```sh
-pi install git:github.com/SlothfulDreams/pi-cc-bridge@v0.84.1-cc2.1.280.1
+pi install git:github.com/SlothfulDreams/pi-cc-bridge@<tag>
 ```
 
 Pinned packages do not move automatically. Install a newer tagged ref explicitly when you are ready to upgrade.
@@ -47,7 +43,7 @@ The package replaces only the built-in Anthropic provider implementation and onl
 
 No identity environment variables are required. When Claude Code state exists, pi-cc-bridge reads the installation ID and account UUID from `~/.claude.json` (or the location selected by `CLAUDE_CONFIG_DIR`) in memory and adds matching request metadata. It does not copy, print, or persist those values.
 
-Current subscription routing also works when that optional metadata is unavailable, as demonstrated by the standalone pi-cc-bridge binary with no identity variables in its environment.
+Subscription routing also works when that optional metadata is unavailable.
 
 ## What it changes
 
@@ -73,42 +69,8 @@ npm run check
 
 Public CI uses fake transports only. It never makes provider requests and requires no credentials.
 
-## Standalone installer and binaries
-
-The Pi package is the recommended installation. macOS and Linux users who prefer the standalone patched build can install the latest native release as `pi-cc-bridge`:
-
-```sh
-curl -fsSL https://github.com/SlothfulDreams/pi-cc-bridge/releases/latest/download/install.sh | sh
-```
-
-The installed launcher checks the latest release checksum at interactive startup. If the installed build differs, it offers to update before starting pi-cc-bridge. Downloads are checksum-verified; network-check failures are silent, while a rejected or failed update continues with the installed build. Set `PI_CC_BRIDGE_NO_UPDATE_CHECK=1` to disable this check; Pi's `PI_OFFLINE=1` also disables it.
-
-Install a specific standalone release with `PI_CC_BRIDGE_RELEASE`:
-
-```sh
-curl -fsSL https://github.com/SlothfulDreams/pi-cc-bridge/releases/latest/download/install.sh | PI_CC_BRIDGE_RELEASE=v0.84.1-cc2.1.280.1 sh
-```
-
-The repository pins an immutable commit from [`paoloanzn/pi`](https://github.com/paoloanzn/pi), applies the patch under `patches/`, and delegates standalone compilation to Pi's release builder.
-
-```sh
-./scripts/verify.sh
-./scripts/build-all.sh "$PWD/out"
-```
-
-Manual patch application:
-
-```sh
-git clone https://github.com/paoloanzn/pi.git pi
-cd pi
-git checkout --detach 7aca0d7b3e041a9e2b635e8370b2549f032932d6
-git am ../pi-cc-bridge/patches/*.patch
-```
-
-Build requirements and repeatability limits are in [`BUILD.md`](BUILD.md).
-
 ## Status and terms
 
 This project is unofficial and is not affiliated with or endorsed by Anthropic or the upstream Pi project. Users must provide their own valid account credentials and determine whether use complies with applicable service terms. The compatibility mechanism is version-specific and must be revalidated when Claude Code or Pi changes.
 
-No OAuth tokens, identifiers, captures, or private Claude state are included in the package or release artifacts. Pi and the derived patch are distributed under the MIT license; see [`LICENSE`](LICENSE).
+No OAuth tokens, identifiers, captures, or private Claude state are included in the package. The package is distributed under the MIT license; see [`LICENSE`](LICENSE).
