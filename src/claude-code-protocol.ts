@@ -258,6 +258,20 @@ export function patchClaudeCodeCch(serializedBody: string): string {
 			"Pi Black expected the Anthropic SDK to serialize a JSON object",
 		);
 	}
+	// Continuations inherit the billing block from the thread's create request.
+	if (
+		!("system" in body) &&
+		!("tools" in body) &&
+		isObject(body.thread) &&
+		body.thread.type === "continue" &&
+		typeof body.thread.previous_message_id === "string" &&
+		body.thread.previous_message_id.length > 0 &&
+		typeof body.model === "string" &&
+		typeof body.max_tokens === "number" &&
+		Array.isArray(body.messages)
+	) {
+		return serializedBody;
+	}
 	if (
 		!Array.isArray(body.system) ||
 		!isObject(body.system[0]) ||

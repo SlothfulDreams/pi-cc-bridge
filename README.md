@@ -61,6 +61,8 @@ For Anthropic OAuth requests, Pi Black reproduces the version-specific SDK-CLI r
 
 The checksum implementation validates and updates only the first billing system block. User content, tool results, descriptions, and nested `model` or `max_tokens` fields cannot redirect the placeholder patch.
 
+Pi's message-thread continuations remain enabled. Thread creation and full-history replays receive the normal billing checksum; valid continuations omit `system` and `tools`, inherit those fields from the server-side thread, and pass through unchanged. Pi retains responsibility for thread state and recovery when a thread expires or is unsupported.
+
 ## Verify the package
 
 ```sh
