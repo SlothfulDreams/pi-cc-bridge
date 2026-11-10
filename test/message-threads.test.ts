@@ -60,7 +60,7 @@ describe("message-thread checksums", () => {
 				system: [
 					{
 						type: "text",
-						text: "x-anthropic-billing-header: cc_version=2.1.280.022; cc_entrypoint=sdk-cli; cch=00000;",
+						text: "x-anthropic-billing-header: cc_version=2.1.319.b5f; cc_entrypoint=sdk-cli; cch=00000;",
 					},
 				],
 			};
