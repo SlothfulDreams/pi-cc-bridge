@@ -1,5 +1,5 @@
 {
-  "name": "pi-black",
+  "name": "pi-cc-bridge",
   "version": "0.1.0",
   "description": "Claude Code wire compatibility for Pi",
   "type": "module",
@@ -11,7 +11,7 @@
   ],
   "pi": {
     "extensions": [
-      "./extensions/pi-black.ts"
+      "./extensions/pi-cc-bridge.ts"
     ]
   },
   "scripts": {

@@ -49,7 +49,7 @@ make_release() {
   cat > "$staging_dir/pi/pi" <<'EOF'
 #!/bin/sh
 script_dir="$(CDPATH= cd "$(dirname "$0")" && pwd)"
-printf 'Pi Black %s: %s\n' "$(cat "$script_dir/VERSION")" "$*"
+printf 'pi-cc-bridge %s: %s\n' "$(cat "$script_dir/VERSION")" "$*"
 EOF
   chmod 755 "$staging_dir/pi/pi"
   printf '%s\n' "$version" > "$staging_dir/pi/VERSION"
@@ -77,46 +77,46 @@ assert_equal() {
 make_release "1"
 PATH="$install_dir:$PATH" \
 HOME="$test_home" \
-PI_BLACK_INSTALL_DIR="$install_dir" \
-PI_BLACK_RELEASES_URL="file://$releases_dir" \
+PI_CC_BRIDGE_INSTALL_DIR="$install_dir" \
+PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" \
   sh "$repo_root/install.sh" > "$temporary_root/install.out"
 
-test -x "$install_dir/pi-black"
-test -x "$install_dir/pi-black-runtime/pi"
-test -f "$install_dir/pi-black-runtime/.pi-black-archive.sha256"
+test -x "$install_dir/pi-cc-bridge"
+test -x "$install_dir/pi-cc-bridge-runtime/pi"
+test -f "$install_dir/pi-cc-bridge-runtime/.pi-cc-bridge-archive.sha256"
 assert_equal \
-  "Pi Black 1: alpha" \
-  "$(PI_BLACK_NO_UPDATE_CHECK=1 "$install_dir/pi-black" alpha)" \
+  "pi-cc-bridge 1: alpha" \
+  "$(PI_CC_BRIDGE_NO_UPDATE_CHECK=1 "$install_dir/pi-cc-bridge" alpha)" \
   "installed launcher executes the standalone runtime"
 
 assert_equal \
-  "Pi Black 1: current" \
-  "$(PI_BLACK_FORCE_UPDATE_CHECK=1 PI_BLACK_RELEASES_URL="file://$releases_dir" "$install_dir/pi-black" current 2> "$temporary_root/current.err")" \
+  "pi-cc-bridge 1: current" \
+  "$(PI_CC_BRIDGE_FORCE_UPDATE_CHECK=1 PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" "$install_dir/pi-cc-bridge" current 2> "$temporary_root/current.err")" \
   "current release does not prompt"
 test ! -s "$temporary_root/current.err"
 
 make_release "2"
-printf '2\n' | PI_BLACK_FORCE_UPDATE_CHECK=1 PI_BLACK_RELEASES_URL="file://$releases_dir" \
-  "$install_dir/pi-black" skipped > "$temporary_root/skip.out" 2> "$temporary_root/skip.err"
-assert_equal "Pi Black 1: skipped" "$(cat "$temporary_root/skip.out")" "declined update keeps installed runtime"
-grep -F "Update available for Pi Black" "$temporary_root/skip.err" >/dev/null
+printf '2\n' | PI_CC_BRIDGE_FORCE_UPDATE_CHECK=1 PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" \
+  "$install_dir/pi-cc-bridge" skipped > "$temporary_root/skip.out" 2> "$temporary_root/skip.err"
+assert_equal "pi-cc-bridge 1: skipped" "$(cat "$temporary_root/skip.out")" "declined update keeps installed runtime"
+grep -F "Update available for pi-cc-bridge" "$temporary_root/skip.err" >/dev/null
 
 printf '\n' | PATH="$install_dir:$PATH" HOME="$test_home" \
-  PI_BLACK_FORCE_UPDATE_CHECK=1 PI_BLACK_RELEASES_URL="file://$releases_dir" \
-  "$install_dir/pi-black" updated > "$temporary_root/update.out" 2> "$temporary_root/update.err"
-assert_equal "Pi Black 2: updated" "$(tail -n 1 "$temporary_root/update.out")" "accepted update runs new runtime"
-grep -F "Update available for Pi Black" "$temporary_root/update.err" >/dev/null
+  PI_CC_BRIDGE_FORCE_UPDATE_CHECK=1 PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" \
+  "$install_dir/pi-cc-bridge" updated > "$temporary_root/update.out" 2> "$temporary_root/update.err"
+assert_equal "pi-cc-bridge 2: updated" "$(tail -n 1 "$temporary_root/update.out")" "accepted update runs new runtime"
+grep -F "Update available for pi-cc-bridge" "$temporary_root/update.err" >/dev/null
 
 make_release "3"
 printf 'tampered\n' >> "$releases_dir/install.sh"
-printf '\n' | PI_BLACK_FORCE_UPDATE_CHECK=1 PI_BLACK_RELEASES_URL="file://$releases_dir" \
-  "$install_dir/pi-black" guarded > "$temporary_root/guarded.out" 2> "$temporary_root/guarded.err"
-assert_equal "Pi Black 2: guarded" "$(cat "$temporary_root/guarded.out")" "tampered updater keeps installed runtime"
+printf '\n' | PI_CC_BRIDGE_FORCE_UPDATE_CHECK=1 PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" \
+  "$install_dir/pi-cc-bridge" guarded > "$temporary_root/guarded.out" 2> "$temporary_root/guarded.err"
+assert_equal "pi-cc-bridge 2: guarded" "$(cat "$temporary_root/guarded.out")" "tampered updater keeps installed runtime"
 grep -F "installer checksum did not match" "$temporary_root/guarded.err" >/dev/null
 
 assert_equal \
-  "Pi Black 2: offline" \
-  "$(PI_OFFLINE=1 PI_BLACK_FORCE_UPDATE_CHECK=1 PI_BLACK_RELEASES_URL="file://$releases_dir" "$install_dir/pi-black" offline 2> "$temporary_root/offline.err")" \
+  "pi-cc-bridge 2: offline" \
+  "$(PI_OFFLINE=1 PI_CC_BRIDGE_FORCE_UPDATE_CHECK=1 PI_CC_BRIDGE_RELEASES_URL="file://$releases_dir" "$install_dir/pi-cc-bridge" offline 2> "$temporary_root/offline.err")" \
   "offline mode disables update detection"
 test ! -s "$temporary_root/offline.err"
 

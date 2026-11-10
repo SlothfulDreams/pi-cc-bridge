@@ -1,4 +1,4 @@
-# Pi Black
+# pi-cc-bridge
 
 Use your Claude Max (or Pro) subscription with Pi.
 
@@ -9,13 +9,13 @@ This unofficial release is installable as a Pi package from its Git tag. It also
 Install the package with:
 
 ```sh
-pi install git:github.com/paoloanzn/pi-black@<tag>
+pi install git:github.com/SlothfulDreams/pi-cc-bridge@<tag>
 ```
 
 On macOS or Linux, install the standalone build and its interactive update detector with:
 
 ```sh
-curl -fsSL https://github.com/paoloanzn/pi-black/releases/latest/download/install.sh | sh
+curl -fsSL https://github.com/SlothfulDreams/pi-cc-bridge/releases/latest/download/install.sh | sh
 ```
 
 Binary assets include:

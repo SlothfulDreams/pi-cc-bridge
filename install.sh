@@ -2,11 +2,11 @@
 
 set -eu
 
-REPOSITORY="paoloanzn/pi-black"
-RELEASE="${PI_BLACK_RELEASE:-latest}"
-INSTALL_DIR="${PI_BLACK_INSTALL_DIR:-$HOME/.local/bin}"
-COMMAND_PATH="$INSTALL_DIR/pi-black"
-RUNTIME_PATH="$INSTALL_DIR/pi-black-runtime"
+REPOSITORY="SlothfulDreams/pi-cc-bridge"
+RELEASE="${PI_CC_BRIDGE_RELEASE:-latest}"
+INSTALL_DIR="${PI_CC_BRIDGE_INSTALL_DIR:-$HOME/.local/bin}"
+COMMAND_PATH="$INSTALL_DIR/pi-cc-bridge"
+RUNTIME_PATH="$INSTALL_DIR/pi-cc-bridge-runtime"
 tmp_dir=""
 staged_runtime=""
 staged_launcher=""
@@ -22,16 +22,16 @@ usage() {
   cat <<'EOF'
 Usage: install.sh [--release TAG]
 
-Install the latest standalone Pi Black release for this computer.
+Install the latest standalone pi-cc-bridge release for this computer.
 
 Options:
   --release TAG  Install a specific release tag.
   -h, --help     Show this help.
 
 Environment:
-  PI_BLACK_RELEASE       Release tag to install (default: latest).
-  PI_BLACK_INSTALL_DIR   Destination directory (default: ~/.local/bin).
-  PI_BLACK_RELEASES_URL  Override the release-asset base URL.
+  PI_CC_BRIDGE_RELEASE       Release tag to install (default: latest).
+  PI_CC_BRIDGE_INSTALL_DIR   Destination directory (default: ~/.local/bin).
+  PI_CC_BRIDGE_RELEASES_URL  Override the release-asset base URL.
 EOF
 }
 
@@ -62,7 +62,7 @@ parse_args() {
 
 require_command() {
   if ! command -v "$1" >/dev/null 2>&1; then
-    echo "$1 is required to install Pi Black." >&2
+    echo "$1 is required to install pi-cc-bridge." >&2
     exit 1
   fi
 }
@@ -90,7 +90,7 @@ download_file() {
     return
   fi
 
-  echo "curl or wget is required to install Pi Black." >&2
+  echo "curl or wget is required to install pi-cc-bridge." >&2
   exit 1
 }
 
@@ -112,7 +112,7 @@ file_sha256() {
     return
   fi
 
-  echo "sha256sum, shasum, or openssl is required to verify Pi Black." >&2
+  echo "sha256sum, shasum, or openssl is required to verify pi-cc-bridge." >&2
   exit 1
 }
 
@@ -152,9 +152,9 @@ add_to_path() {
   fi
 
   {
-    printf '\n# >>> Pi Black installer >>>\n'
+    printf '\n# >>> pi-cc-bridge installer >>>\n'
     printf '%s\n' "$path_line"
-    printf '# <<< Pi Black installer <<<\n'
+    printf '# <<< pi-cc-bridge installer <<<\n'
   } >> "$profile"
   path_action="added"
 }
@@ -220,8 +220,8 @@ archive="pi-$platform.tar.gz"
 manifest="SHA256SUMS"
 launcher="launcher.sh"
 
-if [ -n "${PI_BLACK_RELEASES_URL:-}" ]; then
-  base_url="$PI_BLACK_RELEASES_URL"
+if [ -n "${PI_CC_BRIDGE_RELEASES_URL:-}" ]; then
+  base_url="$PI_CC_BRIDGE_RELEASES_URL"
   release_label="$RELEASE"
 elif [ "$RELEASE" = "latest" ]; then
   base_url="https://github.com/${REPOSITORY}/releases/latest/download"
@@ -241,7 +241,7 @@ archive_path="$tmp_dir/$archive"
 manifest_path="$tmp_dir/$manifest"
 launcher_path="$tmp_dir/$launcher"
 
-step "Installing Pi Black"
+step "Installing pi-cc-bridge"
 step "Detected platform: $platform_label"
 step "Resolved release: $release_label"
 step "Downloading $archive"
@@ -252,14 +252,14 @@ download_file "$base_url/$launcher" "$launcher_path"
 expected_archive_digest="$(manifest_digest "$manifest_path" "$archive")"
 actual_archive_digest="$(file_sha256 "$archive_path")"
 if [ -z "$expected_archive_digest" ] || [ "$actual_archive_digest" != "$expected_archive_digest" ]; then
-  echo "Downloaded Pi Black archive checksum did not match." >&2
+  echo "Downloaded pi-cc-bridge archive checksum did not match." >&2
   exit 1
 fi
 
 expected_launcher_digest="$(manifest_digest "$manifest_path" "$launcher")"
 actual_launcher_digest="$(file_sha256 "$launcher_path")"
 if [ -z "$expected_launcher_digest" ] || [ "$actual_launcher_digest" != "$expected_launcher_digest" ]; then
-  echo "Downloaded Pi Black launcher checksum did not match." >&2
+  echo "Downloaded pi-cc-bridge launcher checksum did not match." >&2
   exit 1
 fi
 
@@ -281,27 +281,27 @@ if ! tar -tzf "$archive_path" | awk '
   }
   END { exit !(valid && found) }
 '; then
-  echo "The Pi Black archive has an unexpected layout." >&2
+  echo "The pi-cc-bridge archive has an unexpected layout." >&2
   exit 1
 fi
 
 tar -xzf "$archive_path" -C "$tmp_dir"
 if [ ! -x "$tmp_dir/pi/pi" ]; then
-  echo "The Pi Black executable was not found in the archive." >&2
+  echo "The pi-cc-bridge executable was not found in the archive." >&2
   exit 1
 fi
 
 mkdir -p "$INSTALL_DIR"
-staged_runtime="$INSTALL_DIR/.pi-black-runtime.$$"
-staged_launcher="$INSTALL_DIR/.pi-black-launcher.$$"
-backup_runtime="$INSTALL_DIR/.pi-black-runtime-backup.$$"
+staged_runtime="$INSTALL_DIR/.pi-cc-bridge-runtime.$$"
+staged_launcher="$INSTALL_DIR/.pi-cc-bridge-launcher.$$"
+backup_runtime="$INSTALL_DIR/.pi-cc-bridge-runtime-backup.$$"
 if [ -e "$staged_runtime" ] || [ -e "$staged_launcher" ] || [ -e "$backup_runtime" ]; then
-  echo "A stale Pi Black installation staging path exists in $INSTALL_DIR." >&2
+  echo "A stale pi-cc-bridge installation staging path exists in $INSTALL_DIR." >&2
   exit 1
 fi
 
 mv "$tmp_dir/pi" "$staged_runtime"
-printf '%s  %s\n' "$actual_archive_digest" "$archive" > "$staged_runtime/.pi-black-archive.sha256"
+printf '%s  %s\n' "$actual_archive_digest" "$archive" > "$staged_runtime/.pi-cc-bridge-archive.sha256"
 install -m 755 "$launcher_path" "$staged_launcher"
 
 if [ -e "$RUNTIME_PATH" ]; then
@@ -330,4 +330,4 @@ case "$path_action" in
     ;;
 esac
 
-printf 'Pi Black installed successfully. Run: pi-black\n'
+printf 'pi-cc-bridge installed successfully. Run: pi-cc-bridge\n'

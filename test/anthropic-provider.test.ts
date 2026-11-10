@@ -66,7 +66,7 @@ describe("Anthropic provider wrapper", () => {
 		expect(fake.getSimpleOptions()).toBe(options);
 	});
 
-	it("applies existing payload transforms before the final Pi Black transform", async () => {
+	it("applies existing payload transforms before the final pi-cc-bridge transform", async () => {
 		const fake = fakeProvider();
 		const wrapped = wrapAnthropicProvider(fake.provider, {
 			deviceId: "f".repeat(64),

@@ -210,7 +210,7 @@ export async function transformClaudeCodePayload(
 	identity: ClaudeCodeIdentity | undefined,
 ): Promise<JsonObject> {
 	if (!isObject(payload))
-		throw new Error("Pi Black expected an Anthropic JSON request object");
+		throw new Error("pi-cc-bridge expected an Anthropic JSON request object");
 	const existingSystem = Array.isArray(payload.system) ? payload.system : [];
 	const firstSystemText = isObject(existingSystem[0])
 		? existingSystem[0].text
@@ -255,7 +255,7 @@ export function patchClaudeCodeCch(serializedBody: string): string {
 		body = parsed;
 	} catch {
 		throw new Error(
-			"Pi Black expected the Anthropic SDK to serialize a JSON object",
+			"pi-cc-bridge expected the Anthropic SDK to serialize a JSON object",
 		);
 	}
 	// Continuations inherit the billing block from the thread's create request.
@@ -278,19 +278,19 @@ export function patchClaudeCodeCch(serializedBody: string): string {
 		typeof body.system[0].text !== "string"
 	) {
 		throw new Error(
-			"Pi Black OAuth request is missing the billing system block",
+			"pi-cc-bridge OAuth request is missing the billing system block",
 		);
 	}
 	const billingText = body.system[0].text;
 	if (!billingText.startsWith("x-anthropic-billing-header: ")) {
-		throw new Error("Pi Black OAuth request has an invalid billing block");
+		throw new Error("pi-cc-bridge OAuth request has an invalid billing block");
 	}
 	if (!billingText.includes(CCH_PLACEHOLDER)) {
 		if (/; cch=[0-9a-f]{5};$/u.test(billingText)) return serializedBody;
-		throw new Error("Pi Black OAuth request has an invalid cch billing value");
+		throw new Error("pi-cc-bridge OAuth request has an invalid cch billing value");
 	}
 	if (typeof body.model !== "string" || !("max_tokens" in body)) {
-		throw new Error("Pi Black OAuth request is missing model or max_tokens");
+		throw new Error("pi-cc-bridge OAuth request is missing model or max_tokens");
 	}
 
 	const normalized = structuredClone(body);
@@ -341,7 +341,7 @@ export function createClaudeCodeFetch(
 			return fetchImplementation(request);
 		}
 		throw new Error(
-			"Pi Black OAuth request body is not available for cch patching",
+			"pi-cc-bridge OAuth request body is not available for cch patching",
 		);
 	};
 }

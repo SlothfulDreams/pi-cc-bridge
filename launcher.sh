@@ -2,16 +2,16 @@
 
 set -u
 
-REPOSITORY="paoloanzn/pi-black"
-RELEASES_BASE_URL="${PI_BLACK_RELEASES_URL:-https://github.com/${REPOSITORY}/releases/latest/download}"
+REPOSITORY="SlothfulDreams/pi-cc-bridge"
+RELEASES_BASE_URL="${PI_CC_BRIDGE_RELEASES_URL:-https://github.com/${REPOSITORY}/releases/latest/download}"
 case "$0" in
   */*) launcher_path="$0" ;;
   *) launcher_path="$(command -v "$0")" || exit 1 ;;
 esac
 script_dir="$(CDPATH= cd "$(dirname "$launcher_path")" && pwd)" || exit 1
-RUNTIME_PATH="$script_dir/pi-black-runtime"
+RUNTIME_PATH="$script_dir/pi-cc-bridge-runtime"
 REAL_BINARY="$RUNTIME_PATH/pi"
-INSTALLED_DIGEST_PATH="$RUNTIME_PATH/.pi-black-archive.sha256"
+INSTALLED_DIGEST_PATH="$RUNTIME_PATH/.pi-cc-bridge-archive.sha256"
 tmp_dir=""
 
 cleanup() {
@@ -63,7 +63,7 @@ installed_digest() {
 }
 
 updates_disabled() {
-  case "${PI_BLACK_NO_UPDATE_CHECK:-}" in
+  case "${PI_CC_BRIDGE_NO_UPDATE_CHECK:-}" in
     1 | [Tt][Rr][Uu][Ee] | [Yy][Ee][Ss]) return 0 ;;
   esac
   case "${PI_OFFLINE:-}" in
@@ -83,16 +83,16 @@ select_archive() {
 }
 
 can_prompt() {
-  if [ "${PI_BLACK_FORCE_UPDATE_CHECK:-}" = "1" ]; then
+  if [ "${PI_CC_BRIDGE_FORCE_UPDATE_CHECK:-}" = "1" ]; then
     return 0
   fi
   [ -t 0 ] && [ -t 2 ] && [ -r /dev/tty ] && [ -w /dev/tty ]
 }
 
 prompt_for_update() {
-  if [ "${PI_BLACK_FORCE_UPDATE_CHECK:-}" = "1" ]; then
+  if [ "${PI_CC_BRIDGE_FORCE_UPDATE_CHECK:-}" = "1" ]; then
     {
-      printf '\n✨ Update available for Pi Black.\n\n'
+      printf '\n✨ Update available for pi-cc-bridge.\n\n'
       printf '  1) Update now\n'
       printf '  2) Skip\n\n'
       printf 'Choice [1]:'
@@ -103,7 +103,7 @@ prompt_for_update() {
     printf '\n' >&2
   else
     {
-      printf '\n✨ Update available for Pi Black.\n\n'
+      printf '\n✨ Update available for pi-cc-bridge.\n\n'
       printf '  1) Update now\n'
       printf '  2) Skip\n\n'
       printf 'Choice [1]:'
@@ -145,24 +145,24 @@ run_update_check() {
 
   installer_path="$tmp_dir/$installer"
   if ! download_file "$RELEASES_BASE_URL/$installer" "$installer_path" >/dev/null 2>&1; then
-    printf 'WARNING: Could not download the Pi Black update; continuing with the installed version.\n' >&2
+    printf 'WARNING: Could not download the pi-cc-bridge update; continuing with the installed version.\n' >&2
     return
   fi
 
   expected_installer_digest="$(manifest_digest "$manifest_path" "$installer")"
   actual_installer_digest="$(file_sha256 "$installer_path")"
   if [ -z "$expected_installer_digest" ] || [ "$actual_installer_digest" != "$expected_installer_digest" ]; then
-    printf 'WARNING: The Pi Black installer checksum did not match; update cancelled.\n' >&2
+    printf 'WARNING: The pi-cc-bridge installer checksum did not match; update cancelled.\n' >&2
     return
   fi
 
-  if ! PI_BLACK_INSTALL_DIR="$script_dir" PI_BLACK_NO_UPDATE_CHECK=1 sh "$installer_path"; then
-    printf 'WARNING: Pi Black could not be updated; continuing with the installed version.\n' >&2
+  if ! PI_CC_BRIDGE_INSTALL_DIR="$script_dir" PI_CC_BRIDGE_NO_UPDATE_CHECK=1 sh "$installer_path"; then
+    printf 'WARNING: pi-cc-bridge could not be updated; continuing with the installed version.\n' >&2
   fi
 }
 
 if [ ! -x "$REAL_BINARY" ]; then
-  printf 'Pi Black executable is missing or not executable: %s\n' "$REAL_BINARY" >&2
+  printf 'pi-cc-bridge executable is missing or not executable: %s\n' "$REAL_BINARY" >&2
   exit 1
 fi
 

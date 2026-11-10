@@ -21,7 +21,7 @@ export function wrapAnthropicProvider(
 		| Promise<ClaudeCodeIdentity | undefined> = discoverClaudeCodeIdentity(),
 ): Provider {
 	if (provider.id !== "anthropic")
-		throw new Error(`Pi Black cannot wrap provider "${provider.id}"`);
+		throw new Error(`pi-cc-bridge cannot wrap provider "${provider.id}"`);
 
 	return {
 		...provider,

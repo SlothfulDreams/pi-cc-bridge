@@ -1,4 +1,4 @@
-name: Build and publish Pi Black release
+name: Build and publish pi-cc-bridge release
 
 on:
   push:

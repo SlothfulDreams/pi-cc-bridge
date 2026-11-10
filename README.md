@@ -1,26 +1,26 @@
-# Pi Black
+# pi-cc-bridge
 
 Use your Claude Max (or Pro) subscription with Pi.
 
-Pi Black is an unofficial Pi package that routes Anthropic OAuth requests through your existing Claude subscription usage by applying Claude Code 2.1.280 request conventions. The existing source patch and standalone-binary build system remain available as a fallback.
+pi-cc-bridge is an unofficial Pi package that routes Anthropic OAuth requests through your existing Claude subscription usage by applying Claude Code 2.1.280 request conventions. The existing source patch and standalone-binary build system remain available as a fallback.
 
 ## Install
 
-Pi Black has three independently versioned compatibility surfaces:
+pi-cc-bridge has three independently versioned compatibility surfaces:
 
 | Component | Compatible version |
 | --- | --- |
 | Pi package | Pi 0.84.1 or newer |
-| Standalone `pi-black` binary | Based on Pi 0.84.1 |
+| Standalone `pi-cc-bridge` binary | Based on Pi 0.84.1 |
 | Claude Code protocol | 2.1.280 |
 
 The Pi package requires Pi 0.84.1 or newer, with no upper version limit. Future Pi releases are trusted until an incompatibility is identified; the package peer dependencies are `"*"` because Pi supplies its core packages at runtime.
 
 ```sh
-pi install git:github.com/paoloanzn/pi-black
+pi install git:github.com/SlothfulDreams/pi-cc-bridge
 ```
 
-Pi checks unpinned Git packages for updates in the background. When a newer Pi Black commit is available, Pi displays a package-update notice; apply it with:
+Pi checks unpinned Git packages for updates in the background. When a newer pi-cc-bridge commit is available, Pi displays a package-update notice; apply it with:
 
 ```sh
 pi update --extensions
@@ -29,7 +29,7 @@ pi update --extensions
 For a reproducible install, pin a release tag:
 
 ```sh
-pi install git:github.com/paoloanzn/pi-black@v0.84.1-cc2.1.280.1
+pi install git:github.com/SlothfulDreams/pi-cc-bridge@v0.84.1-cc2.1.280.1
 ```
 
 Pinned packages do not move automatically. Install a newer tagged ref explicitly when you are ready to upgrade.
@@ -44,13 +44,13 @@ The package replaces only the built-in Anthropic provider implementation and onl
 
 ## Identity discovery
 
-No identity environment variables are required. When Claude Code state exists, Pi Black reads the installation ID and account UUID from `~/.claude.json` (or the location selected by `CLAUDE_CONFIG_DIR`) in memory and adds matching request metadata. It does not copy, print, or persist those values.
+No identity environment variables are required. When Claude Code state exists, pi-cc-bridge reads the installation ID and account UUID from `~/.claude.json` (or the location selected by `CLAUDE_CONFIG_DIR`) in memory and adds matching request metadata. It does not copy, print, or persist those values.
 
-Current subscription routing also works when that optional metadata is unavailable, as demonstrated by the standalone Pi Black binary with no identity variables in its environment.
+Current subscription routing also works when that optional metadata is unavailable, as demonstrated by the standalone pi-cc-bridge binary with no identity variables in its environment.
 
 ## What it changes
 
-For Anthropic OAuth requests, Pi Black reproduces the version-specific SDK-CLI request shape:
+For Anthropic OAuth requests, pi-cc-bridge reproduces the version-specific SDK-CLI request shape:
 
 - exact billing and Agent SDK system-block ordering;
 - the prompt-dependent `cc_version` suffix;
@@ -74,18 +74,18 @@ Public CI uses fake transports only. It never makes provider requests and requir
 
 ## Standalone installer and binaries
 
-The Pi package is the recommended installation. macOS and Linux users who prefer the standalone patched build can install the latest native release as `pi-black`:
+The Pi package is the recommended installation. macOS and Linux users who prefer the standalone patched build can install the latest native release as `pi-cc-bridge`:
 
 ```sh
-curl -fsSL https://github.com/paoloanzn/pi-black/releases/latest/download/install.sh | sh
+curl -fsSL https://github.com/SlothfulDreams/pi-cc-bridge/releases/latest/download/install.sh | sh
 ```
 
-The installed launcher checks the latest release checksum at interactive startup. If the installed build differs, it offers to update before starting Pi Black. Downloads are checksum-verified; network-check failures are silent, while a rejected or failed update continues with the installed build. Set `PI_BLACK_NO_UPDATE_CHECK=1` to disable this check; Pi's `PI_OFFLINE=1` also disables it.
+The installed launcher checks the latest release checksum at interactive startup. If the installed build differs, it offers to update before starting pi-cc-bridge. Downloads are checksum-verified; network-check failures are silent, while a rejected or failed update continues with the installed build. Set `PI_CC_BRIDGE_NO_UPDATE_CHECK=1` to disable this check; Pi's `PI_OFFLINE=1` also disables it.
 
-Install a specific standalone release with `PI_BLACK_RELEASE`:
+Install a specific standalone release with `PI_CC_BRIDGE_RELEASE`:
 
 ```sh
-curl -fsSL https://github.com/paoloanzn/pi-black/releases/latest/download/install.sh | PI_BLACK_RELEASE=v0.84.1-cc2.1.280.1 sh
+curl -fsSL https://github.com/SlothfulDreams/pi-cc-bridge/releases/latest/download/install.sh | PI_CC_BRIDGE_RELEASE=v0.84.1-cc2.1.280.1 sh
 ```
 
 The repository pins an immutable commit from [`paoloanzn/pi`](https://github.com/paoloanzn/pi), applies the patch under `patches/`, and delegates standalone compilation to Pi's release builder.
@@ -101,7 +101,7 @@ Manual patch application:
 git clone https://github.com/paoloanzn/pi.git pi
 cd pi
 git checkout --detach 7aca0d7b3e041a9e2b635e8370b2549f032932d6
-git am ../pi-black/patches/*.patch
+git am ../pi-cc-bridge/patches/*.patch
 ```
 
 Build requirements and repeatability limits are in [`BUILD.md`](BUILD.md).

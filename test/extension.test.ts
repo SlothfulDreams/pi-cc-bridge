@@ -4,20 +4,20 @@ import {
 	VERSION,
 } from "@earendil-works/pi-coding-agent";
 import { describe, expect, it, vi } from "vitest";
-import piBlack from "../extensions/pi-black.ts";
+import piCcBridge from "../extensions/pi-cc-bridge.ts";
 import {
 	isSupportedPiVersion,
 	MINIMUM_SUPPORTED_PI_VERSION,
 } from "../src/compatibility.ts";
 
-describe("Pi Black extension", () => {
+describe("pi-cc-bridge extension", () => {
 	it("registers the wrapped Anthropic provider with the installed Pi version", () => {
 		expect(isSupportedPiVersion(VERSION)).toBe(true);
 		if (process.env.EXPECTED_PI_VERSION)
 			expect(VERSION).toBe(process.env.EXPECTED_PI_VERSION);
 		const registerProvider = vi.fn<(provider: Provider) => void>();
 
-		piBlack({ registerProvider } as unknown as ExtensionAPI);
+		piCcBridge({ registerProvider } as unknown as ExtensionAPI);
 
 		expect(registerProvider).toHaveBeenCalledOnce();
 		expect(registerProvider.mock.calls[0][0].id).toBe("anthropic");

@@ -7,17 +7,17 @@ import {
 	MINIMUM_SUPPORTED_PI_VERSION,
 } from "../src/compatibility.ts";
 
-export default function piBlack(pi: ExtensionAPI): void {
+export default function piCcBridge(pi: ExtensionAPI): void {
 	if (!isSupportedPiVersion(VERSION)) {
 		throw new Error(
-			`Pi Black requires Pi ${MINIMUM_SUPPORTED_PI_VERSION} or newer; running Pi is ${VERSION}`,
+			`pi-cc-bridge requires Pi ${MINIMUM_SUPPORTED_PI_VERSION} or newer; running Pi is ${VERSION}`,
 		);
 	}
 	const anthropic = builtinProviders().find(
 		(provider) => provider.id === "anthropic",
 	);
 	if (!anthropic)
-		throw new Error("Pi Black could not load Pi's built-in Anthropic provider");
+		throw new Error("pi-cc-bridge could not load Pi's built-in Anthropic provider");
 	pi.registerProvider(
 		wrapAnthropicProvider(anthropic, discoverClaudeCodeIdentity()),
 	);

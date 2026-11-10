@@ -58,7 +58,7 @@ describe("Claude Code protocol", () => {
 	});
 
 	it("discovers and validates identity from Claude Code state without exposing it", async () => {
-		const root = await mkdtemp(join(tmpdir(), "pi-black-"));
+		const root = await mkdtemp(join(tmpdir(), "pi-cc-bridge-"));
 		temporaryDirectories.push(root);
 		const path = join(root, ".claude.json");
 		await writeFile(
